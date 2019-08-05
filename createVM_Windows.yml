@@ -71,9 +71,7 @@
             password: "P@ssw0rd"
         state: present
       register: newvm
-      with_nested:
-        - "{{ ip }}"
-        - "{{ name }}"
+      with_sequence: start=1 count={{ count }} format={{ name }}%00d
       when: facts is failed
 
     - name: Add disks to virtual machine
