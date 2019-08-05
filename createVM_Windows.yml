@@ -8,7 +8,7 @@
   vars:
     esxhost: 10.22.66.104
     datastore: datastore2
-    vmname: "Windows-"
+    name: "Windows-"
     notes: "Ansible Test"
     vmtemplate: "Windows-02"
     dumpfacts: False
@@ -40,7 +40,7 @@
         esxi_hostname: "{{ esxhost }}"
         datacenter: DC2
         folder: /DC2/vm/
-        name: "{{ item[1] }}"
+        name: "{{ item }}"
         template: "{{ vmtemplate }}"
         disk:
           - size_gb: 80
