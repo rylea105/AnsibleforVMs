@@ -1,0 +1,19 @@
+---
+
+# Install/uninstall with win_package
+- name: ensure msi directory
+  win_file: path='c:\msi' state=directory
+
+- name: Download the 7-Zip package
+  win_get_url:
+    url: https://www.7-zip.org/a/7z1701-x64.msi
+    dest: C:\msi\7z.msi
+
+- name: Show state
+  debug:
+    msg: "{{ state }}"
+
+- name: 7-Zip win_package
+  win_package:
+    path: C:\msi\7z.msi
+    state: "{{ state }}"

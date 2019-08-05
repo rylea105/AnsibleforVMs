@@ -1,0 +1,109 @@
+---
+
+# create a new VM from Template
+- name: VM
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    esxhost: 10.22.66.104
+    datastore: datastore2
+    name: "Windows_Server_2012"
+    notes: "Ansible Test"
+    vmtemplate: "Windows-02"
+    dumpfacts: False
+    vm_cpus: "1"
+    vm_memory: "1024"
+    disk_size: "80"
+    wait_ip: "yes"
+    count: 1
+  tasks:
+    - name: Check VM exist
+      vmware_guest_facts:
+        validate_certs: False
+        datacenter: DC2
+        name: "{{ item }}"
+      delegate_to: localhost
+      register: facts
+      with_sequence: start=1 count={{ count }} format={{ name }}%00d
+      ignore_errors: True
+
+    - name: Show Facts
+      debug:
+        msg: "VM {{ name }}"
+      with_sequence: start=1 count={{ count }} format={{ name }}%00d
+      when: facts is succeeded
+
+    - name: Create VM from Template
+      vmware_guest:
+        validate_certs: False
+        esxi_hostname: "{{ esxhost }}"
+        datacenter: DC2
+        folder: /DC2/vm/
+        name: "{{ item }}"
+        template: "{{ vmtemplate }}"
+        disk:
+          - size_gb: 80
+            type: thin
+            datastore: "{{ datastore }}"
+        networks:
+          - name: DP-VL70
+            type: static
+            ip: "{{ ip }}"
+            netmask: "255.255.255.0"
+            gateway: "10.77.66.8"
+            dns_servers: "10.77.66.101"
+            start_connected: true
+            allow_guest_control: true
+        hardware:
+            hotadd_cpu: True
+            hotadd_memory: True
+            num_cpus: "{{ vm_cpus }}"
+            memory_mb: "{{ vm_memory }}"
+        wait_for_ip_address: "{{ wait_ip }}"
+        customization:
+            autologon: true
+            password: "P@ssw0rd"
+        state: present
+      register: newvm
+      with_sequence: start=1 count={{ count }} format={{ name }}%00d
+      when: facts is failed
+
+    - name: Add disks to virtual machine
+      vmware_guest_disk:
+        datacenter: "DC2"
+        validate_certs: no
+        name: "{{ item }}"
+        disk:
+            - size_gb: "{{ disk_size }}"
+              type: thin
+              datastore: datastore2
+              scsi_controller: 2
+              unit_number: 2
+              state: present
+      delegate_to: localhost
+      register: disk_facts
+      with_sequence: start=1 count={{ count }} format={{ name }}%00d
+
+    - name: PowerON VM
+      vmware_guest:
+        validate_certs: False
+        esxi_hostname: "{{ esxhost }}"
+        datacenter: DC2
+        name: "{{ item }}"
+        state: poweredon
+      delegate_to: localhost
+      when: newvm is succeeded
+      with_sequence: start=1 count={{ count }} format={{ name }}%00d
+
+    - name: Wait 600 seconds for target connection to become reachable/usable
+      wait_for_connection:
+        timeout: 600
+
+    - name: Set Data
+      set_stats:
+        data:
+          vm: "{{ newvm.results }}"
+
+
+

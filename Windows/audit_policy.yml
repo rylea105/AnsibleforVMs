@@ -1,0 +1,61 @@
+---
+
+# Audit Policy 
+- name: Audit Policy 
+  hosts: "{{ group_name }}"
+  gather_facts: true
+  tasks:
+    - name: Enable all auditing for the subcategory "Account Logon"
+      win_audit_policy_system:
+        category: Account logon
+        audit_type: success, failure
+
+    - name: Enable all auditing for the subcategory "Account Management"
+      win_audit_policy_system:
+        category: Account Management
+        audit_type: success, failure
+
+    - name: Disable auditing for the category "Directory Service Access"
+      win_audit_policy_system:
+        category: DS Access
+        audit_type: none
+
+    - name: Enable all auditing for the category "Logon Events"
+      win_audit_policy_system:
+        category: Logon/Logoff
+        audit_type: success, failure
+
+    - name: Enable failure auditing for the category "Object Access"
+      win_audit_policy_system:
+        category: Object Access
+        audit_type: failure
+
+    - name: Enable success auditing for the category "Policy Change"
+      win_audit_policy_system:
+        category: Policy Change
+        audit_type: success
+
+    - name: Enable failure auditing for the category "Privilege Use"
+      win_audit_policy_system:
+        category: Privilege Use
+        audit_type: failure
+
+    - name: Disable auditing for the category "Process Tracking"
+      win_audit_policy_system:
+        category: Detailed Tracking
+        audit_type: none
+
+    - name: Enable success auditing for the category "System Events"
+      win_audit_policy_system:
+        category: System
+        audit_type: success
+
+    # - name: Disable auditing for the category "Shut down system immediately"
+    #   win_audit_policy_system:
+    #     subcategory: Shut down system
+    #     audit_type: non
+
+    # - name: Enable success auditing for the category "Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings"
+    #   win_audit_policy_system:
+    #     category: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings
+    #     audit_type: success

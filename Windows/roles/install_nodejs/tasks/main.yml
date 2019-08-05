@@ -1,0 +1,16 @@
+---
+
+- name: ensure msi directory
+  win_file: path='c:\msi' state=directory
+
+- name: copy files for software installation
+  win_get_url: 
+    url: 'https://nodejs.org/dist/v10.16.0/node-v10.16.0-x64.msi'
+    dest: 'c:\msi\node-v10.16.0-x64.msi'
+
+- name: "Install the {{ software }}"
+  win_package:
+    path: https://nodejs.org/dist/v10.16.0/node-v10.16.0-x64.msi
+    state: present
+    product_id: auto
+    arguments: /install /passive /norestart

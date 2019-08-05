@@ -1,0 +1,22 @@
+---
+
+# Tower_Inventory
+- name: Inventory
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  become_user: root
+  vars:
+    name: "name"
+    organization: "Default"
+    state: "present"
+  tasks:
+
+  - name: Inventory Playbook
+    tower_inventory:
+      name: "{{ name }}"
+      organization: "{{ organization }}"
+      state: "{{ state }}"
+      tower_config_file: "~/.tower_cli.cfg"
+
+    

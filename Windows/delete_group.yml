@@ -1,0 +1,16 @@
+---
+
+# Tower_Host
+- name: Host
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    state: "state"
+  tasks: 
+    - name: Host Playbook
+      tower_group:
+        name: "{{ group_name }}"
+        inventory: "{{ inventory }}"
+        state: "{{ state }}"
+      register: fs_group

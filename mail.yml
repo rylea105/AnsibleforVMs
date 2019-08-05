@@ -1,0 +1,59 @@
+---
+
+# E-mail
+- name: Email
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    mail_username: "mail-username"
+    mail_password: "mail-password"
+    mail_receiver: "mail-receiver"
+    name_receiver: "name-receiver"
+    vmname: "{{ vm }}"
+    body: |
+      IP: {{ facts.instance.ipv4 }}
+      Hostname: {{ facts.instance.hw_name }}
+      zip_password: "password"
+      username: Administrator
+      password: P@ssw0rd
+  tasks:
+    - name: Show VM
+      debug: msg={{ vmname[0].instance.hw_name}}
+
+    - name: Check VM exist
+      vmware_guest_facts:
+        validate_certs: False
+        datacenter: DC2
+        name: "{{ vmname[0].instance.hw_name }}"
+      delegate_to: localhost
+      register: facts
+
+    - name: Create a directory if it does not exist
+      file:
+        path: /var/log
+        state: directory
+        mode: '0755'
+
+    - name: Create CSV
+      shell: echo IP Address,Hostname,Username,Password >> /var/log/facts.csv
+      delegate_to: localhost
+    
+    - name: Create CSV
+      shell: echo {{ facts.instance.ipv4 }},{{ facts.instance.hw_name }},{{ username }},{{ password }} >> /var/log/facts.csv
+      delegate_to: localhost
+
+    - name: Set Password File
+      shell: zip -jrm --password "{{ zip_password }}" /var/log/facts.zip /var/log/facts.csv
+
+    - name: Send Email to gmail
+      mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "{{ mail_username }}"
+        password: "{{ mail_password }}"
+        to: "{{ mail_receiver }}"
+        subject: Ansible-report
+        body: "{{ body }}"
+        attach: /var/log/facts.zip
+      delegate_to: localhost

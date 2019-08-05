@@ -1,0 +1,49 @@
+---
+
+# create a new User
+- name: Create Users
+  hosts: "{{ group_name }}"
+  gather_facts: false
+  vars:
+    username: "bob"
+    password: "{{ lookup('password', '/tmp/passwordfile chars=ascii_letters,digits,hexdigits,punctuation length=8') }}"
+    groups: "Users"
+  tasks:
+    - name: Wait 600 seconds for target connection to become reachable/usable
+      wait_for_connection:
+        timeout: 600
+
+    - name: Disable Guest Account
+      win_user:
+        name: Guest
+        account_disabled: true
+      register: user
+
+    # - name: "check user {{ username }}"
+    #   win_user:
+    #     name: "{{ username }}"
+    #     state: query
+    #   register: user
+
+    # - name: show user
+    #   debug:
+    #     msg: "{{ user }}"
+
+    # - name: Create User
+    #   win_user:
+    #     name: "{{ username }}"
+    #     password: "{{ password }}"
+    #     groups:
+    #       - "{{ groups }}"
+    #     state: present
+    #   when: user.state == "absent"
+
+    # - name: Show Password
+    #   debug:
+    #     msg: "{{ password }}"
+    #   when: user.state == "absent"
+
+    # - name: Show message
+    #   debug:
+    #     msg: "User {{ username }} already exist"
+    #   when: user.state == "present"

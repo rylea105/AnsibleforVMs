@@ -1,0 +1,15 @@
+---
+
+# ping
+- name: Ping
+  hosts: "{{ hostname | default('localhost')}}"
+  gather_facts: false
+  tasks:
+    - name: Ping to windows
+      win_ping:
+      register: ping_pong
+
+    - name: set_stats
+      set_stats:
+        data:
+            ping_pong:

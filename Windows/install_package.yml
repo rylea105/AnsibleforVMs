@@ -1,0 +1,14 @@
+---
+
+# Install Windows Package
+- name: Install Windows Packages
+  hosts: "{{ hostname }}"
+  gather_facts: false
+  vars: 
+     software: "name"
+     state: "present"
+  tasks:
+    - import_role:
+        name: 'install_{{ software }}'
+
+

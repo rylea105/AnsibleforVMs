@@ -1,0 +1,43 @@
+---
+
+- name: Disk Partition
+  hosts: "{{ group_name }}"
+  gather_facts: false
+  tasks:
+  - name: Create directory structure
+    win_file:
+      path: C:\ps
+      state: directory
+
+  - name: copy Enable-OfflineDisk.ps1 to host
+    win_copy:
+        src: ./ps/Enable-OfflineDisk.ps1
+        dest: C:\ps\Enable-OfflineDisk.ps1
+
+  - name: retrieve disc information
+    win_disk_facts:
+
+  - name: Enable Disk
+    win_shell: C:\ps\Enable-OfflineDisk.ps1
+    when: ansible_disks[1].guid is none
+
+  - name: initialize disk
+    win_shell: "Initialize-Disk -Number 1"
+    when: ansible_disks[1].guid is none
+
+  - name: Create a partition with drive letter D and maximum size
+    win_partition:
+      drive_letter: D
+      partition_size: -1
+      disk_number: 1
+      read_only: false
+      state: present
+    when: ansible_disks[1].guid is none
+
+  - name: Full format the newly created partition as NTFS and label it
+    win_format:
+      drive_letter: D
+      file_system: NTFS
+      new_label: Formatted
+      full: True
+      

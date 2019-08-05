@@ -1,0 +1,35 @@
+---
+
+# Delete VM
+- name: Delete VM
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    esxhost: 10.22.66.104
+    vm_name: "vm_name"
+    datacenter: "datacenter"
+  tasks:
+    - name: PowerOff VM
+      vmware_guest:
+        validate_certs: False
+        esxi_hostname: "{{ esxhost }}"
+        datacenter: "{{ datacenter }}"
+        name: "{{ item }}"
+        state: poweredoff
+      delegate_to: localhost
+      with_sequence: start=1 count={{ count }} format={{ vm_name }}%00d
+      register: status
+      ignore_errors: True
+
+    - name: Delete VM
+      vmware_guest:
+        validate_certs: False
+        esxi_hostname: "{{ esxhost }}"
+        datacenter: "{{ datacenter }}"
+        name: "{{ item }}"
+        state: absent
+      delegate_to: localhost
+      with_sequence: start=1 count={{ count }} format={{ vm_name }}%00d
+      when: status is succeeded
+      

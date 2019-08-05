@@ -1,0 +1,19 @@
+---
+
+# Install Node.js
+- name: Install Node.js
+  hosts: "{{ hostname }}"
+  gather_facts: false
+  tasks:
+    - name: ensure msi directory
+      win_file: path='c:\msi' state=directory
+
+    - name: copy files for software installation
+      win_get_url: 
+        url: 'https://nodejs.org/dist/v10.16.0/node-v10.16.0-x64.msi'
+        dest: 'c:\msi\node-v10.16.0-x64.msi'
+
+
+    - name: ensure Node.js installation
+      win_msi: 
+        path: 'c:\msi\node-v10.16.0-x64.msi'

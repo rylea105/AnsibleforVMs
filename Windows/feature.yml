@@ -1,0 +1,16 @@
+---
+
+# Feature
+- name: Install Feature
+  hosts: "{{ hostname }}"
+  gather_facts: false
+  vars:
+    feature: "feature name"
+    state: "state name"
+  tasks:
+    - name: Install {{ feature }} feature"
+      win_feature:
+        name: "{{ feature }}"
+        state: "{{ state }}"
+        include_sub_features: True
+        include_management_tools: True

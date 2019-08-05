@@ -1,0 +1,21 @@
+---
+
+# Install MariaDB
+- name: Install MariaDB
+  hosts: "{{ hostname }}"
+  gather_facts: false
+  tasks:
+    - name: ensure msi directory
+      win_file: path='c:\msi' state=directory
+
+    - name: copy files for software installation
+      win_get_url: 
+        url: 'http://mirrors.bestthaihost.com/mariadb//mariadb-10.4.6/winx64-packages/mariadb-10.4.6-winx64.msi'
+        dest: 'c:\msi\mariadb-10.4.6-winx64.msi'
+
+
+    - name: ensure mysql installation
+      win_msi: 
+        path: 'c:\msi\mariadb-10.4.6-winx64.msi'
+
+

@@ -1,0 +1,8 @@
+---
+
+- name: "Install the {{ software }}"
+  win_package:
+    path: https://cdn.mysql.com//Downloads/MySQLInstaller/mysql-installer-web-community-8.0.17.0.msi
+    state: present
+    product_id: auto
+    arguments: /install /norestart

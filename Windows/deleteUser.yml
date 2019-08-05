@@ -1,0 +1,29 @@
+---
+
+# create a new User
+- name: Delete User
+  hosts: "{{ hostname }}"
+  gather_facts: false
+  vars:
+    username: "bob"
+  tasks:
+    - name: "check user {{ username }}"
+      win_user:
+        name: "{{ username }}"
+        state: query
+      register: user
+
+    - name: show user
+      debug:
+        msg: "{{ user }}"
+
+    - name: Delete User
+      win_user:
+        name: "{{ username }}"
+        state: absent
+      when: user.state == "present"
+
+    - name: Show message
+      debug:
+        msg: "User {{ username }} not exist"
+      when: user.state == "absent"

@@ -1,0 +1,21 @@
+---
+
+# Update Windows
+- name: Update Windows
+  hosts: "{{ hostname }}"
+  gather_facts: false
+  vars: 
+     category_name: ["CriticalUpdates","SecurityUpdates","UpdateRollups"]
+     reboot: "yes"
+     state: "installed"
+  tasks:
+    - name: Update Windows ans reboot
+      win_updates:
+        category_names: 
+          - "{{ item }}"
+        state: "{{ state }}"
+      with_items :  "{{ category_name }}"
+
+    - name: reboot after final update task
+      win_reboot:
+        reboot_timeout: 60

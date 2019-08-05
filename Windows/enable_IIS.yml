@@ -1,0 +1,69 @@
+---
+
+# Feature
+- name: Install Feature
+  hosts: "{{ group_name }}"
+  gather_facts: false
+  vars:
+    ip: "{{ vm.results.instance.ipv4 }}"
+  tasks:
+    - name: Install Net-Framework-45-Features
+      win_feature:
+        name: Net-Framework-45-Features
+        state: "present"
+        include_sub_features: True
+        include_management_tools: True
+
+    - name: "Install Web-Server feature"
+      win_feature:
+        name: "Web-Server"
+        state: "present"
+        # include_sub_features: True
+        # include_management_tools: True
+
+    - name: ensure sites directory
+      win_file: path='C:\sites\g-able' state=directory
+
+    - name: Add IIS_IUSRS allow rights
+      win_acl:
+        path: C:\sites\g-able
+        user: IIS_IUSRS
+        rights: FullControl
+        type: allow
+        state: present
+        inherit: ContainerInherit, ObjectInherit
+        propagation: 'None'
+
+    - name: copy index.htm to host
+      win_copy:
+        src: ./files/index.htm
+        dest: C:\sites\g-able\index.htm
+
+    - name: g-able IIS site
+      win_iis_website:
+        name: g-able
+        state: started
+        port: 80
+        ip: "{{ ip }}"
+        # hostname: "g-able.{{ ip }}"
+        # application_pool: g-able
+        physical_path: C:\sites\g-able
+        # parameters: logfile.directory:C:\sites\logs
+      register: website
+
+    - name: Disable Default Web Site
+      win_iis_website:
+        name: "Default Web Site"
+        state: stopped
+
+    
+
+    # - name: Add a HTTPS binding
+    #   win_iis_webbinding:
+    #     name: g-able
+    #     protocol: https
+    #     port: 443
+    #     ip: "{{ ip }}"
+    #     certificate_hash: B0D0FA8408FC67B230338FCA584D03792DA73F4C
+    #     state: present
+        

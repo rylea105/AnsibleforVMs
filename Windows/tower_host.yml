@@ -1,0 +1,39 @@
+---
+
+# Tower_Host
+- name: Host
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    hostname: "{{ vm.results.instance.hw_name }}"
+    inventory: "inventory"
+    state: "present"
+    ip: "{{ vm.results.instance.ipv4 }}"
+  tasks:
+
+  - name: Host Playbook
+    tower_host:
+      name: "{{ host_name }}"
+      inventory: "{{ inventory }}"
+      state: present
+      variables:
+        ansible_host: "{{ ip }}"
+        ansible_ssh_host: "{{ ip }}"
+    register: fs_host
+
+  - name: Host Playbook
+    tower_group:
+      name: "{{ group_name }}"
+      inventory: "{{ inventory }}"
+      state: present
+      variables:
+        ansible_port: 5986
+        ansible_winrm_transport: basic
+        ansible_connection: winrm
+        ansible_winrm_server_cert_validation: ignore
+        ansible_winrm_credssp_disable_tlsv1_2: True
+    register: fs_group
+
+  - name: Associate host group 
+    shell: tower-cli host associate  --host "{{ fs_host.id }}" --group "{{ fs_group.id }}"

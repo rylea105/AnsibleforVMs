@@ -1,0 +1,22 @@
+---
+
+# Add domain
+- name: Add Domain
+  hosts: "{{ group_name }}"
+  gather_facts: false
+  vars: 
+    dns_domain: "ansible.g-able.com"
+    admin_user: "gadmin@ansible.g-able.com"
+    admin_password: "0ugvg[b]201"
+  tasks:
+    - win_domain_membership:
+        dns_domain_name: "{{ dns_domain }}"
+        domain_admin_user: "{{ admin_user }}"
+        domain_admin_password: "{{ admin_password }}"
+        state: domain
+      register: domain_state
+      ignore_errors: True
+
+    - win_reboot:
+      when: domain_state.reboot_required
+

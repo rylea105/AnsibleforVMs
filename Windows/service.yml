@@ -1,0 +1,18 @@
+---
+
+# Service
+- name: Service
+  hosts: "{{ hostname }}"
+  gather_facts: false
+  vars:
+    service: "service name"
+    state: "state name"
+    mode: "mode"
+  tasks:
+    - name: Install {{ service }} service"
+      win_service:
+        name: "{{ service }}"
+        start_mode: "{{ mode }}"
+        state: "{{ state }}"
+        include_sub_features: true
+        include_management_tools: true

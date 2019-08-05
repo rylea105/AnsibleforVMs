@@ -1,0 +1,27 @@
+---
+
+# Logs
+- name: Logs
+  hosts: "{{ group_name }}"
+  gather_facts: false
+  tasks:
+    - name: Application Logs
+      win_eventlog:
+        name: Application
+        maximum_size: 32768KB
+        overflow_action: DoNotOverwrite
+        state: present
+
+    - name: Security Logs
+      win_eventlog:
+        name: Security
+        maximum_size: 81920KB
+        overflow_action: DoNotOverwrite
+        state: present
+
+    - name: System Logs
+      win_eventlog:
+        name: System
+        maximum_size: 32768KB
+        overflow_action: DoNotOverwrite
+        state: present
