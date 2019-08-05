@@ -8,7 +8,7 @@
   vars:
     esxhost: 10.22.66.104
     datastore: datastore2
-    name:
+    vmname:
       - "Windows-1"
       - "Windows-2"
     notes: "Ansible Test"
@@ -71,7 +71,9 @@
             password: "P@ssw0rd"
         state: present
       register: newvm
-      with_sequence: start=1 count={{ count }} format={{ name }}%00d
+      with_nested:
+        - "{{ ip }}"
+        - "{{ vmname }}"
       when: facts is failed
 
     - name: Add disks to virtual machine
