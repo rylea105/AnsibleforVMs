@@ -6,21 +6,26 @@
   gather_facts: false
   connection: local
   vars:
-    hostname: "{{ vm.results.instance.hw_name }}"
+    hostname: "{{ vm[0].instance.hw_name }}"
     inventory: "inventory"
     state: "present"
     ip: "{{ vm.results.instance.ipv4 }}"
+
   tasks:
+  - name: Wait 600 seconds for target connection to become reachable/usable
+    wait_for_connection:
+      timeout: 600
 
   - name: Host Playbook
     tower_host:
-      name: "{{ host_name }}"
+      name: "{{ vm[item] }}"
       inventory: "{{ inventory }}"
       state: present
       variables:
-        ansible_host: "{{ ip }}"
-        ansible_ssh_host: "{{ ip }}"
+        ansible_host: "{{ vm[item].instance.ipv4 }}"
+        ansible_ssh_host: "{{ vm[item].instance.ipv4 }}"
     register: fs_host
+    with_sequence: start=1 count={{ count }}
 
   - name: Host Playbook
     tower_group:
@@ -36,4 +41,5 @@
     register: fs_group
 
   - name: Associate host group 
-    shell: tower-cli host associate  --host "{{ fs_host.id }}" --group "{{ fs_group.id }}"
+    shell: tower-cli host associate  --host "{{ fs_host[item].id }}" --group "{{ fs_group.id }}"
+    with_sequence: start=1 count={{ count }}
