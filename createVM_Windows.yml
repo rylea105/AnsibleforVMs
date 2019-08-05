@@ -73,6 +73,7 @@
       register: newvm
       with_nested:
         - "{{ ip }}"
+        - "{{ name }}"
       when: facts is failed
 
     - name: Add disks to virtual machine
