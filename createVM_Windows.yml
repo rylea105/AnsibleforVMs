@@ -50,8 +50,8 @@
           - name: DP-VL70
             type: dhcp
             # ip: "{{ item[0] }}"
-            netmask: "255.255.255.0"
-            gateway: "10.77.66.8"
+            # netmask: "255.255.255.0"
+            # gateway: "10.77.66.8"
             dns_servers: "10.77.66.101"
             start_connected: true
             allow_guest_control: true
