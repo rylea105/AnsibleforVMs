@@ -8,9 +8,7 @@
   vars:
     esxhost: 10.22.66.104
     datastore: datastore2
-    vmname:
-      - "Windows-1"
-      - "Windows-2"
+    vmname: "Windows-"
     notes: "Ansible Test"
     vmtemplate: "Windows-02"
     dumpfacts: False
@@ -19,9 +17,6 @@
     disk_size: "80"
     wait_ip: "yes"
     count: 1
-    ip:
-      - "10.77.66.120"
-      - "10.77.66.119"
   tasks:
     - name: Check VM exist
       vmware_guest_facts:
@@ -53,8 +48,8 @@
             datastore: "{{ datastore }}"
         networks:
           - name: DP-VL70
-            type: static
-            ip: "{{ item[0] }}"
+            type: dhcp
+            # ip: "{{ item[0] }}"
             netmask: "255.255.255.0"
             gateway: "10.77.66.8"
             dns_servers: "10.77.66.101"
@@ -71,9 +66,7 @@
             password: "P@ssw0rd"
         state: present
       register: newvm
-      with_nested:
-        - "{{ ip }}"
-        - "{{ vmname }}"
+      with_sequence: start=1 count={{ count }} format={{ name }}%00d
       when: facts is failed
 
     - name: Add disks to virtual machine
