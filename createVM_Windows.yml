@@ -9,8 +9,8 @@
     esxhost: 10.22.66.104
     datastore: datastore2
     name:
-      - Windows-1
-      - Windows-2
+      - "Windows-1"
+      - "Windows-2"
     notes: "Ansible Test"
     vmtemplate: "Windows-02"
     dumpfacts: False
@@ -20,8 +20,8 @@
     wait_ip: "yes"
     count: 1
     ip:
-      - 10.77.66.120
-      - 10.77.66.119
+      - "10.77.66.120"
+      - "10.77.66.119"
   tasks:
     - name: Check VM exist
       vmware_guest_facts:
