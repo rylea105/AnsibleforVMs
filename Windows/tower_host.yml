@@ -14,7 +14,7 @@
   tasks:
   - name: Sleep
     pause:
-      minutes: 1
+      minutes: 5
 
   - name: Wait 600 seconds for target connection to become reachable/usable
     wait_for_connection:
@@ -29,7 +29,7 @@
         ansible_host: "{{ vm[item].instance.ipv4 }}"
         ansible_ssh_host: "{{ vm[item].instance.ipv4 }}"
     register: fs_host
-    with_sequence: start=1 count={{ count }}
+    with_sequence: start=0 count={{ count }}
 
   - name: Host Playbook
     tower_group:
@@ -46,4 +46,4 @@
 
   - name: Associate host group 
     shell: tower-cli host associate  --host "{{ fs_host[item].id }}" --group "{{ fs_group.id }}"
-    with_sequence: start=1 count={{ count }}
+    with_sequence: start=0 count={{ count }}
