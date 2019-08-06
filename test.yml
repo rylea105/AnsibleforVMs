@@ -10,7 +10,7 @@
     ip: ["10.77.66.119","10.77.66.120"]
   tasks:
     - name: Show stats
-      debug: msg="{{ item }}"
+      debug: vmname="{{ item }}"
       with_sequence: start=1 count={{ count }} format={{ name }}%00d
       register: vmname
 
