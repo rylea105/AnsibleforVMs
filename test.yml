@@ -1,0 +1,10 @@
+---
+
+#LookUp
+- name: Test Jinja2
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Show stats
+      debug: msg="{{ vm }}"

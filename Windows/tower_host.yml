@@ -5,12 +5,6 @@
   hosts: localhost
   gather_facts: false
   connection: local
-  vars:
-    hostname: "{{ vm[0].instance.hw_name }}"
-    inventory: "inventory"
-    state: "present"
-    ip: "{{ vm.results.instance.ipv4 }}"
-
   tasks:
   - name: Sleep
     pause:
