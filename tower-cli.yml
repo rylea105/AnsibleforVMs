@@ -6,9 +6,13 @@
   gather_facts: false
   connection: local
   tasks:
-    - name: Show stats
-      shell: "{{ command }}"
-      register: job
+    - name: get jobs
+      uri:
+        url: https://10.77.66.10/api/v2/jobs/2613/
+        validate_certs: no
+        method: POST
+        status_code: 201
+        body_format: json
+      register: jobs
 
-    - name: debug
-      debug: msg="{{ job }}"
+    - debug: msg="{{ jobs }}"
