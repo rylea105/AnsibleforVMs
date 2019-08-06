@@ -5,6 +5,17 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  vars:
+    name: "Windows-"
+    ip: ["10.77.66.119","10.77.66.120"]
   tasks:
     - name: Show stats
-      debug: msg="{{ vm }}"
+      debug: msg="{{ item }}"
+      with_sequence: start=1 count={{ count }} format={{ name }}%00d
+      register: name
+
+    - name: 
+      debug: msg="{{ item[0] }} + {{ item[1] }}"
+      with_nested:
+        - "{{ name }}"
+        - "{{ ip }}"
