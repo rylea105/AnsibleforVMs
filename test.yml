@@ -12,7 +12,8 @@
     - name: Show stats
       debug: msg="{{ item }}"
       with_sequence: start=1 count={{ count }} format={{ name }}%00d
-      loop_var: outer_item
+      loop_control:
+        loop_var: outer_item
 
     - name: 
       debug: msg="{{ outer_item }} + {{ item }}"
