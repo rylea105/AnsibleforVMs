@@ -5,12 +5,8 @@
   hosts: localhost
   gather_facts: false
   connection: local
-  vars:
-    name: "Windows-"
-    ip: ["10.77.66.119","10.77.66.120"]
   tasks:
-    - name: Show stats
-      shell: "echo {{ item }}"
+    - shell: "echo {{ item }}"
       loop:
        - "Windows-1"
        - "Windows-2"

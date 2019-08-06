@@ -14,30 +14,37 @@
     wait_for_connection:
       timeout: 600
 
-  - name: Host Playbook
-    tower_host:
-      name: "{{ vm[item] }}"
-      inventory: "{{ inventory }}"
-      state: present
-      variables:
-        ansible_host: "{{ vm[item].instance.ipv4 }}"
-        ansible_ssh_host: "{{ vm[item].instance.ipv4 }}"
-    register: fs_host
-    with_sequence: start=0 count={{ count }}
+  - name: Show VM 1
+    debug: msg="{{ vm[0] }}"
 
-  - name: Host Playbook
-    tower_group:
-      name: "{{ group_name }}"
-      inventory: "{{ inventory }}"
-      state: present
-      variables:
-        ansible_port: 5986
-        ansible_winrm_transport: basic
-        ansible_connection: winrm
-        ansible_winrm_server_cert_validation: ignore
-        ansible_winrm_credssp_disable_tlsv1_2: True
-    register: fs_group
+  - name: Show VM 2
+    debug: msg="{{ vm[1] }}"
 
-  - name: Associate host group 
-    shell: tower-cli host associate  --host "{{ fs_host[item].id }}" --group "{{ fs_group.id }}"
-    with_sequence: start=0 count={{ count }}
+
+  # - name: Host Playbook
+  #   tower_host:
+  #     name: "{{ vm[item] }}"
+  #     inventory: "{{ inventory }}"
+  #     state: present
+  #     variables:
+  #       ansible_host: "{{ vm[item].instance.ipv4 }}"
+  #       ansible_ssh_host: "{{ vm[item].instance.ipv4 }}"
+  #   register: fs_host
+  #   with_sequence: start=0 count={{ count }}
+
+  # - name: Host Playbook
+  #   tower_group:
+  #     name: "{{ group_name }}"
+  #     inventory: "{{ inventory }}"
+  #     state: present
+  #     variables:
+  #       ansible_port: 5986
+  #       ansible_winrm_transport: basic
+  #       ansible_connection: winrm
+  #       ansible_winrm_server_cert_validation: ignore
+  #       ansible_winrm_credssp_disable_tlsv1_2: True
+  #   register: fs_group
+
+  # - name: Associate host group 
+  #   shell: tower-cli host associate  --host "{{ fs_host[item].id }}" --group "{{ fs_group.id }}"
+  #   with_sequence: start=0 count={{ count }}
