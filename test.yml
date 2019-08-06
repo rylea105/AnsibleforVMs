@@ -10,8 +10,10 @@
     ip: ["10.77.66.119","10.77.66.120"]
   tasks:
     - name: Show stats
-      debug: msg="{{ item }}"
-      with_sequence: start=1 count={{ count }} format={{ name }}%00d
+      shell: "echo {{ item }}"
+      loop:
+       - "Windows-1"
+       - "Windows-2"
       loop_control:
         loop_var: outer_item
 
