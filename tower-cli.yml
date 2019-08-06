@@ -1,0 +1,14 @@
+---
+
+#LookUp
+- name: Test tower-cli
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Show stats
+      shell: "{{ command }}"
+      register: job
+
+    - name: debug
+      debug: msg="{{ job }}"
