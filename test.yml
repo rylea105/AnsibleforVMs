@@ -10,12 +10,12 @@
     ip: ["10.77.66.119","10.77.66.120"]
   tasks:
     - name: Show stats
-      debug: vmname="{{ item }}"
+      debug: msg="{{ item }}"
       with_sequence: start=1 count={{ count }} format={{ name }}%00d
-      register: vmname
+      loop_var: outer_item
 
     - name: 
-      debug: msg="{{ item[0] }} + {{ item[1] }}"
-      with_nested:
-        - "{{ vmname }}"
-        - "{{ ip }}"
+      debug: msg="{{ outer_item }} + {{ item }}"
+      loop: 
+        - "10.77.66.119"
+        - "10.77.66.120"
